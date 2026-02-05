@@ -8,7 +8,7 @@ split_path = Path("system/data/splitvids")
 frame_path = Path("system/data/processed")
 
 ## Setting were the frames will be taken from in each video and the size they must be set to
-frame_positions = [0.20, 0.40, 0.60, 0.80]
+frame_positions = [0.15, 0.30, 0.45, 0.60, 0.75, 0.90]
 image_size = (224, 224)
 
 ## Function to extract 4 frames fom each video at the specified positions above
