@@ -11,7 +11,7 @@ frame_path = Path("system/data/processed")
 frame_positions = [0.15, 0.30, 0.45, 0.60, 0.75, 0.90]
 image_size = (224, 224)
 
-## Function to extract 4 frames fom each video at the specified positions above
+## Function to extract 6 frames fom each video at the specified positions above
 def frame_extraction(cap):
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_ids = sorted(set(int(p * (total_frames - 1)) for p in frame_positions))

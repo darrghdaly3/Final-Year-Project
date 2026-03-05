@@ -13,3 +13,6 @@ Thumbs.db
 system/data/selected/
 system/data/processed/
 system/data/splitvids/
+
+## Ignore the Jupyter model weights, data etc
+.ipynb_checkpoints
