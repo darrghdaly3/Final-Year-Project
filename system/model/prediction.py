@@ -88,13 +88,13 @@ def model_prediction(image_path):
     else:
         label = "Real"
         
-    return label, confidence.item()
+    return face, label, confidence.item()
 
 ## Testing the model with a random image (Will be removed later)
 if __name__ == "__main__":
     
-    image_path = "system/model/test.jpg"
-    label, confidence = model_prediction(image_path)
+    image_path = "system/model/heatmap-test.jpg"
+    face, label, confidence = model_prediction(image_path)
     
     print("Classification:", label)
     print(f"Confidence Score: {round(confidence*100)}%")
