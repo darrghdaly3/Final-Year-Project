@@ -3,6 +3,7 @@ from torchvision import transforms
 import cv2
 import numpy as np
 from system.model.prediction import model, model_prediction
+from system.explainability.textual import detect_features 
 import matplotlib.pyplot as plt
 
 ## Using the same Image Transform used for model training images
@@ -45,47 +46,58 @@ def create_gradcam(face):
     
     ## Creating the Heatmap
     saved_gradients = gradients.mean([0, 2, 3])
-    maps = activations[0]
+    maps = activations[0].clone()
     
     for m in range(maps.shape[0]):
         maps[m] *= saved_gradients[m]
     
     ## Averaging all feature maps to create 1 map
-    heatmap = maps.mean(dim=0).detach().numpy()
+    heatmap_raw = maps.mean(dim=0).detach().numpy()
     
-    heatmap = np.maximum(heatmap, 0)
-    heatmap /= heatmap.max() + 1e-8
+    heatmap_raw = np.maximum(heatmap_raw, 0)
+    heatmap_raw /= heatmap_raw.max() + 1e-8
     
     ## Resizing map and coverting colour so cv2 can dsiplay it
-    heatmap = cv2.resize(heatmap, (224, 224))
+    heatmap_show = cv2.resize(heatmap_raw, (224, 224))
     
-    heatmap = np.uint8(255 * heatmap)
-    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    heatmap_show = np.uint8(255 * heatmap_show)
+    heatmap_show = cv2.applyColorMap(heatmap_show, cv2.COLORMAP_JET)
     
     ## Overlaying the heatmap over faces
     face_np = np.array(face.resize((224, 224)))
     face_bgr = cv2.cvtColor(face_np, cv2.COLOR_RGB2BGR)
     
     ## Blending the face and the heatmap
-    map_layer = cv2.addWeighted(face_bgr, 0.6, heatmap, 0.4, 0)
+    map_layer = cv2.addWeighted(face_bgr, 0.6, heatmap_show, 0.4, 0)
     
-    return map_layer
+    return map_layer, heatmap_raw
 
 ## Testing the heatmap on the image used in prediction.py
 if __name__ == "__main__":
     
-    image_path = "system/model/heatmap-test.jpg"
+    image_path = "system/model/test.jpg"
     face, label, confidence = model_prediction(image_path)
     
     if face is None:
         print("No Face Detected")
     else:
-        gradcam = create_gradcam(face)
+        gradcam, heatmap = create_gradcam(face)
+        selected_area = detect_features(heatmap)
 
         # Show result
         print("Classification:", label)
         print(f"Confidence Score: {round(confidence*100)}%")
+        
+        if label == "Fake":
+            print("Explanation:", f"The detector focused mainly on the {selected_area} area(s), which are possdibly manipulated or fake features.")
 
-        plt.imshow(cv2.cvtColor(gradcam, cv2.COLOR_BGR2RGB), alpha=0.4)
-        plt.axis("off")
-        plt.show()
+            plt.imshow(cv2.cvtColor(gradcam, cv2.COLOR_BGR2RGB), alpha=0.4)
+            plt.axis("off")
+            plt.show()
+
+        elif label == "Real" and confidence < 0.80:
+            print("Explanation:", f"The detector found the media to be real, but is low in confidence due to the {selected_area} area(s).")
+
+            plt.imshow(cv2.cvtColor(gradcam, cv2.COLOR_BGR2RGB), alpha=0.4)
+            plt.axis("off")
+            plt.show()
