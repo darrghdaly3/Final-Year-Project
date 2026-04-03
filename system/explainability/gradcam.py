@@ -75,7 +75,7 @@ def create_gradcam(face):
 ## Testing the heatmap on the image used in prediction.py
 if __name__ == "__main__":
     
-    image_path = "system/model/test.jpg"
+    image_path = "system/model/sample.jpg"
     face, label, confidence = model_prediction(image_path)
     
     if face is None:
