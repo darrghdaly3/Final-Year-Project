@@ -30,6 +30,9 @@ def face_detection(image_path):
     
     ## Reusing code from the PoC and the extract_detect_crop.py scripts
     image = cv2.imread(image_path)
+    if image is None:
+        return None
+    
     h, w, _ = image.shape
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
@@ -63,7 +66,7 @@ def face_detection(image_path):
     face_rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
     face_pil = Image.fromarray(face_rgb)
     
-    face_pil.show() ## Showing the cropped image to conform mediapipe worked (will be removed)
+    ##face_pil.show() ## Showing the cropped image to conform mediapipe worked (will be removed)
     
     return face_pil
 
@@ -72,7 +75,7 @@ def model_prediction(image_path):
     face = face_detection(image_path)
 
     if face is None:
-        return "No Face Detected in Media!", 0.0
+        return None, None, 0.0
     
     ##image = Image.open(image_path).convert("RGB")
     image = image_transform(face).unsqueeze(0)
