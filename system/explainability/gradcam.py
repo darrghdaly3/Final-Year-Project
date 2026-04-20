@@ -6,6 +6,7 @@ from system.model.prediction import model, model_prediction
 from system.explainability.textual import detect_features 
 import matplotlib.pyplot as plt
 
+
 ## Using the same Image Transform used for model training images
 image_transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -17,7 +18,7 @@ activations = None
 gradients = None
 
 ## Creates the forward hook that saves the features from the last convolutional layer
-def get_features(module, input, output):
+def get_activations(module, input, output):
     global activations
     activations = output
 
@@ -28,7 +29,7 @@ def get_gradients(module, grad_input, grad_output):
 
 ## Choosing the last convolutional layer of the EfficientNet model, and attaching the forward and backward hooks
 chosen_layer = model.features[-1]
-chosen_layer.register_forward_hook(get_features)
+chosen_layer.register_forward_hook(get_activations)
 chosen_layer.register_full_backward_hook(get_gradients)
 
 ## The function that creates the Grad Cam heat map and places it over a face
@@ -89,7 +90,7 @@ if __name__ == "__main__":
         print(f"Confidence Score: {round(confidence*100)}%")
         
         if label == "Fake":
-            print("Explanation:", f"The detector focused mainly on the {selected_area} area(s), which are possdibly manipulated or fake features.")
+            print("Explanation:", f"The detector focused mainly on the {selected_area} area(s), which are possibly manipulated or fake features.")
 
             plt.imshow(cv2.cvtColor(gradcam, cv2.COLOR_BGR2RGB), alpha=0.4)
             plt.axis("off")

@@ -27,6 +27,9 @@ def detect_features(heatmap):
 
     elif len(selected_area) == 2:
         return f"{selected_area[0]} and {selected_area[1]}"
+    
+    elif len(selected_area) == 3:
+        return f"{selected_area[0]} and {selected_area[1]} and {selected_area[2]}"
 
     else:
-        return "The detector found that areas outside the eyes, nose or mouth areas are possibly manipulated or fake."
+        return "An error has occured! Please reupload media."

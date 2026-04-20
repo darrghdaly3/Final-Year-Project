@@ -66,7 +66,7 @@ def face_detection(image_path):
     face_rgb = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
     face_pil = Image.fromarray(face_rgb)
     
-    ##face_pil.show() ## Showing the cropped image to conform mediapipe worked (will be removed)
+    ## face_pil.show() ## Showing the cropped image to conform mediapipe worked (will be removed)
     
     return face_pil
 
@@ -96,7 +96,7 @@ def model_prediction(image_path):
 ## Testing the model with a random image (Will be removed later)
 if __name__ == "__main__":
     
-    image_path = "system/model/heatmap-test.jpg"
+    image_path = "system/model/test.jpg"
     face, label, confidence = model_prediction(image_path)
     
     print("Classification:", label)
