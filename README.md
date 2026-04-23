@@ -25,6 +25,13 @@ pip install matplotlib
 pip install streamlit
 ```
 
+# Trained Model Download
+- Download and place in system/model/efficientnet
+
+https://drive.google.com/file/d/1txy3undVNfJ0-iK9H0QgDtjNuirzGN02/view?usp=sharing
+
+
+
 # Note 
 - Created using Python 3.10 so all libraries can be supported
 
